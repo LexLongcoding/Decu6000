@@ -120,6 +120,7 @@ bool PatchManager::load (int index)
     applyValues (values);
     currentIndex = index;
     currentName = e.name;
+    notifyCurrentChanged();
     return true;
 }
 
@@ -157,6 +158,7 @@ bool PatchManager::saveUser (const juce::String& rawName)
     modified.store (false);
     refresh();
     selectByName (name, false);
+    notifyCurrentChanged();
     return true;
 }
 
@@ -169,6 +171,7 @@ bool PatchManager::deleteUser (int index)
     const bool wasCurrent = index == currentIndex;
     refresh();
     if (wasCurrent) { currentIndex = -1; modified.store (true); }   // sound stays; it's now unsaved
+    notifyCurrentChanged();
     return true;
 }
 
@@ -180,6 +183,7 @@ void PatchManager::restoreSession (const juce::String& name, bool wasModified)
         selectByName (name, true);
     }
     modified.store (wasModified);
+    notifyCurrentChanged();
 }
 
 void PatchManager::parameterChanged (const juce::String&, float)

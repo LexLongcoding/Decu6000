@@ -4,6 +4,7 @@
 #pragma once
 #include <juce_audio_processors/juce_audio_processors.h>
 #include <atomic>
+#include <functional>
 #include <vector>
 
 // Patches = every sound parameter, saved by name. Factory patches are built in;
@@ -57,7 +58,12 @@ public:
 
     static juce::String sanitiseName (const juce::String&);
 
+    // Called whenever the current patch changes (load / save / delete / session restore),
+    // so the processor can tell the host which program is now selected.
+    std::function<void()> onCurrentPatchChanged;
+
 private:
+    void notifyCurrentChanged()                       { if (onCurrentPatchChanged) onCurrentPatchChanged(); }
     void parameterChanged (const juce::String&, float) override;
     void applyValues (const std::vector<std::pair<juce::String, float>>& values);
     void selectByName (const juce::String& name, bool factoryFirst);

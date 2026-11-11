@@ -99,6 +99,8 @@ Decu6000AudioProcessor::Decu6000AudioProcessor()
     buildIndexTable();
     for (auto& c : ccToParam)
         c.store (-1);
+
+    patches.onCurrentPatchChanged = [this] { currentPatchChanged(); };
 }
 
 void Decu6000AudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
@@ -522,7 +524,22 @@ int Decu6000AudioProcessor::getCurrentProgram()
 
 void Decu6000AudioProcessor::setCurrentProgram (int index)
 {
+    // Hosts re-send the program they last knew about - Cubase does it on stop and on
+    // loop/cycle restart. Re-loading the patch we already report would throw away the
+    // current sound (and any unsaved tweaks), so only act on a genuine change.
+    if (index == getCurrentProgram())
+        return;
+
+    const juce::ScopedValueSetter<bool> fromHost (hostIsSettingProgram, true);
     patches.load (index);
+}
+
+void Decu6000AudioProcessor::currentPatchChanged()
+{
+    // Keep the host's idea of the current program in step with the patch browser.
+    // Without this the host's program stays at 0 (INIT) and it sends that back on stop.
+    if (! hostIsSettingProgram)
+        updateHostDisplay (ChangeDetails().withProgramChanged (true));
 }
 
 const juce::String Decu6000AudioProcessor::getProgramName (int index)
