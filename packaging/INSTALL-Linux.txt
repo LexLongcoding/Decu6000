@@ -21,6 +21,9 @@ REQUIREMENTS
 PATCHES
   Saved patches live in  ~/.config/Decu6000/Patches
 
+MANUAL
+  See Decu6000-User-Manual.pdf for every control, MIDI learn, patches and tips.
+
 LICENSE
   Decu6000 is free, open-source software under the GNU AGPL v3.0 or later
   (see LICENSE.txt). Source code: https://github.com/LexLongcoding/Decu6000

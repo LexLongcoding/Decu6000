@@ -37,6 +37,7 @@ jobs:
           Copy-Item packaging/INSTALL-Windows.txt $out/
           Copy-Item LICENSE $out/LICENSE.txt
           Copy-Item THIRD-PARTY-NOTICES.md $out/
+          Copy-Item docs/Decu6000-User-Manual.pdf $out/
           Compress-Archive -Path "$out/*" -DestinationPath "$out.zip"
 
       - uses: actions/upload-artifact@v4
@@ -73,6 +74,7 @@ jobs:
           cp packaging/INSTALL-Linux.txt $out/
           cp LICENSE $out/LICENSE.txt
           cp THIRD-PARTY-NOTICES.md $out/
+          cp docs/Decu6000-User-Manual.pdf $out/
           tar czf $out.tar.gz $out
 
       - uses: actions/upload-artifact@v4
