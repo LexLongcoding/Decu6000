@@ -1,4 +1,5 @@
 # Decu6000
+Anime Inspired Drum Synthesizer
 
 Mid-90s cyber-industrial / glitch / trip-hop drum synth (JUCE, VST3 + Standalone).
 Free and open source - see [License](#license).
