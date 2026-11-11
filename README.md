@@ -28,10 +28,10 @@ Pushing a tag such as `v0.8.0` also publishes both as a GitHub Release.
 ### Build it yourself
 Requires CMake 3.22+, a C++17 compiler, and internet access (JUCE is fetched on first configure).
 
-**Windows** - install *Visual Studio 2022 Community* (free; tick "Desktop development
-with C++") and CMake, then in this folder:
+**Windows** - install *Visual Studio Community* 2022 or newer (free; tick "Desktop
+development with C++") and CMake, then in this folder:
 
-    cmake -B build -G "Visual Studio 17 2022" -A x64
+    cmake -B build -A x64
     cmake --build build --config Release
 
 **Linux** (Debian/Ubuntu package names):
