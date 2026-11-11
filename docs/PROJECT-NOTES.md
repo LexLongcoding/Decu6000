@@ -61,11 +61,12 @@ Designed around a 4x4 pad controller (Akai MPD18) but works with keyboards and D
 ## Status at 2026-11-11
 - Linux VST3 + Standalone: built, all tests pass, VST3 verified in a host, Standalone launches.
   Not tested with real audio hardware.
-- Windows: **never compiled yet** - waiting on the GitHub Actions build. On 2026-11-11 GitHub had an
-  Actions incident (degraded from 20:48 UTC); runs 43097004219 and 43098653239 were stuck queued.
-  Next step: check those runs (or push to trigger a new one); fix any MSVC errors.
+- Windows: **builds on GitHub Actions** (run 43106445486, 2026-11-11: VST3 + Standalone, Visual Studio
+  2026 / MSVC 19.51, zero warnings from our code). Not yet run on a real Windows machine.
+  (Runs 43097004219 / 43098653239 got stuck "queued" during a GitHub outage; they can be ignored or
+  cancelled.) The workflow no longer hard-codes a Visual Studio version.
 - All 16 voices, engine, reverb, patches, MIDI learn, both views, manual: done.
 
 ## Possible next steps (discussed or natural)
-- Verify the Windows build; fix compile issues if any.
+- Try the Windows build on a real PC (VST3 in a DAW + Standalone with audio/MIDI).
 - Optional: macOS build in CI, per-voice panning / multi-out, more factory patches.
