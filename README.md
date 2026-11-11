@@ -24,7 +24,9 @@ GitHub's own Windows and Linux machines build it for free:
 4. Open the finished run and download **Decu6000-Windows** and/or **Decu6000-Linux**
    from the *Artifacts* section at the bottom. Each zip has an INSTALL file.
 
-Pushing a tag such as `v0.8.0` also publishes both as a GitHub Release.
+**Publishing a release:** on the **Actions** tab choose *Build Decu6000*, click *Run workflow*,
+enter a version such as `v0.9.0` under *Release version*, and run it. GitHub builds both,
+creates the tag and publishes the release with notes from `docs/RELEASE-NOTES.md`.
 
 ### Build it yourself
 Requires CMake 3.22+, a C++17 compiler, and internet access (JUCE is fetched on first configure).
