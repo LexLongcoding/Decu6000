@@ -89,10 +89,23 @@ jobs:
     needs: [ windows, linux ]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+
       - uses: actions/download-artifact@v4
         with:
           path: dist
           merge-multiple: true
+
+      - name: Name the downloads after the version
+        run: |
+          tag="${GITHUB_REF_NAME}"
+          mv dist/Decu6000-Windows.zip "dist/Decu6000-${tag}-Windows-x64.zip"
+          mv dist/Decu6000-Linux-x86_64.tar.gz "dist/Decu6000-${tag}-Linux-x86_64.tar.gz"
+          cp docs/Decu6000-User-Manual.pdf "dist/Decu6000-${tag}-User-Manual.pdf"
+          ls -la dist
+
       - uses: softprops/action-gh-release@v2
         with:
+          name: Decu6000 ${{ github.ref_name }}
+          body_path: docs/RELEASE-NOTES.md
           files: dist/*
