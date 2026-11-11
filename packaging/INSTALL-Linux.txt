@@ -1,0 +1,26 @@
+DECU6000 - Linux (x86_64)
+=========================
+
+VST3 PLUGIN
+  Copy the "Decu6000.vst3" folder to   ~/.vst3/
+    mkdir -p ~/.vst3 && cp -r Decu6000.vst3 ~/.vst3/
+  Then rescan plugins in your DAW (Bitwig, Reaper, Ardour, Carla...).
+
+STANDALONE
+  ./Decu6000          (if needed first:  chmod +x Decu6000)
+  Click "Options" (top-left) -> "Audio/MIDI Settings..." to choose ALSA or
+  JACK, your output device and your MIDI input (MPD18 / keyboard).
+  - JACK / PipeWire-JACK: start your JACK server (or use pw-jack ./Decu6000).
+  - ALSA: pick your card; if another app holds the device, use "default"
+    or "pulse"/"pipewire" from the device list.
+
+REQUIREMENTS
+  Needs the usual desktop libraries: ALSA (libasound2), fontconfig, freetype.
+  JACK is optional and loaded only if installed.
+
+PATCHES
+  Saved patches live in  ~/.config/Decu6000/Patches
+
+LICENSE
+  Decu6000 is free, open-source software under the GNU AGPL v3.0 or later
+  (see LICENSE.txt). Source code: https://github.com/LexLongcoding/Decu6000

@@ -1,0 +1,27 @@
+DECU6000 - Windows (64-bit)
+===========================
+
+VST3 PLUGIN
+  1. Copy the whole "Decu6000.vst3" folder to:
+       C:\Program Files\Common Files\VST3\
+     (Windows will ask for administrator permission - click Continue.)
+  2. In your DAW, rescan plugins. Decu6000 appears as an instrument.
+
+STANDALONE
+  Double-click Decu6000.exe - no install needed.
+  Click "Options" (top-left) -> "Audio/MIDI Settings..." to choose:
+    - your audio output (pick "Windows Audio (Exclusive Mode)" for low latency), and
+    - your MIDI input (tick your MPD18 / keyboard under "Active MIDI inputs").
+
+  Windows may show "Windows protected your PC" the first time, because the app
+  isn't signed with a paid code-signing certificate. Click "More info" ->
+  "Run anyway". This only happens once.
+
+PATCHES
+  Your saved patches live in  %APPDATA%\Decu6000\Patches
+  (paste that into the Explorer address bar). The Standalone and the VST3
+  share the same patches.
+
+LICENSE
+  Decu6000 is free, open-source software under the GNU AGPL v3.0 or later
+  (see LICENSE.txt). Source code: https://github.com/LexLongcoding/Decu6000
