@@ -298,6 +298,12 @@ void Decu6000AudioProcessor::resetAllVoices()
 // trigger events (possibly dropped or delayed by the Bio-Neural Engine).
 void Decu6000AudioProcessor::handleMidi (const juce::MidiMessage& m, int pos, int numSamples)
 {
+    if (m.isProgramChange())
+        diag (diagMidiProgramChange, m.getProgramChangeNumber());
+
+    if (m.isAllNotesOff() || m.isAllSoundOff() || m.isResetAllControllers())
+        diag (diagMidiReset, m.getControllerNumber());
+
     if (m.isAllNotesOff() || m.isAllSoundOff())
     {
         resetAllVoices();
@@ -528,8 +534,12 @@ void Decu6000AudioProcessor::setCurrentProgram (int index)
     // loop/cycle restart. Re-loading the patch we already report would throw away the
     // current sound (and any unsaved tweaks), so only act on a genuine change.
     if (index == getCurrentProgram())
+    {
+        diag (diagProgramIgnored, index);
         return;
+    }
 
+    diag (diagProgramLoaded, index);
     const juce::ScopedValueSetter<bool> fromHost (hostIsSettingProgram, true);
     patches.load (index);
 }
@@ -596,6 +606,7 @@ void Decu6000AudioProcessor::setStateInformation (const void* data, int sizeInBy
     if (auto xml = getXmlFromBinary (data, sizeInBytes))
         if (xml->hasTagName (apvts.state.getType()))
         {
+            diag (diagStateRestored, 0);
             auto state = juce::ValueTree::fromXml (*xml);
 
             const auto mapText = state.getProperty (noteMapProperty).toString();

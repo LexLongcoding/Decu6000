@@ -88,6 +88,7 @@ private:
     juce::TooltipWindow tooltips { this, 700 };   // full parameter names on hover
 
     std::array<int, PadMap::numPads> seenHits {};
+    int seenDiag = 0;   // TEMP DIAGNOSTIC
     int seenLearnCount = 0, seenCcLearnCount = 0, tickCount = 0;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Decu6000AudioProcessorEditor)
