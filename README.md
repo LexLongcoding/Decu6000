@@ -66,7 +66,8 @@ you're turning and MIDI-learn messages. Double-click a knob to reset it.
 The LCD in the header shows the current patch (`PATCH 03 // RUST BELT`); a `*` means
 you've changed it since loading. Use the arrows either side to step through patches,
 or click the LCD for the full list plus **Save**, **Save As...**, **Delete** and
-**Open patch folder**. Your DAW's preset menu lists the same patches.
+**Open patch folder**. Patches are chosen here, not from your DAW's preset menu
+(DAW presets still work - they save the plug-in's full state).
 
 - 7 factory patches: INIT, HOLOGRAM DIVA, RUST BELT, TRIP HOP 94, GLITCH RITUAL, SUBMERGED, AWAKENING.
 - User patches are small `.decupatch` files - copy them between computers or share them:

@@ -510,25 +510,18 @@ void Decu6000AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
     meters[1].store (buffer.getMagnitude (buffer.getNumChannels() > 1 ? 1 : 0, 0, numSamples), std::memory_order_relaxed);
 }
 
-int Decu6000AudioProcessor::getNumPrograms()
-{
-    return juce::jmax (1, static_cast<int> (patches.getEntries().size()));
-}
+// Patches are NOT exposed to the host as programs. Cubase re-sends program 0 on
+// transport stop and loop restart, which reloaded INIT over whatever patch was
+// picked in Decu6000's own browser. With a single program JUCE creates no VST3
+// program-change parameter, so the host has nothing to send. Patches are chosen
+// in the plugin's browser; DAW presets still work because they save the full state.
+int Decu6000AudioProcessor::getNumPrograms()                        { return 1; }
+int Decu6000AudioProcessor::getCurrentProgram()                     { return 0; }
+const juce::String Decu6000AudioProcessor::getProgramName (int)     { return "Decu6000"; }
 
-int Decu6000AudioProcessor::getCurrentProgram()
+void Decu6000AudioProcessor::setCurrentProgram (int)
 {
-    return juce::jmax (0, patches.getCurrentIndex());
-}
-
-void Decu6000AudioProcessor::setCurrentProgram (int index)
-{
-    patches.load (index);
-}
-
-const juce::String Decu6000AudioProcessor::getProgramName (int index)
-{
-    const auto& e = patches.getEntries();
-    return index >= 0 && index < static_cast<int> (e.size()) ? e[static_cast<size_t> (index)].name : juce::String();
+    // Ignore host program changes (some hosts still call this with 0, e.g. on load).
 }
 
 juce::AudioProcessorEditor* Decu6000AudioProcessor::createEditor()

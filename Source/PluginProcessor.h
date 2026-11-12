@@ -44,7 +44,7 @@ public:
     bool isMidiEffect() const override { return false; }
     double getTailLengthSeconds() const override { return 8.0; }
 
-    // The DAW's preset list = factory + user patches (as found when the plugin loaded).
+    // Not exposed to the host - see PluginProcessor.cpp.
     int getNumPrograms() override;
     int getCurrentProgram() override;
     void setCurrentProgram (int) override;
