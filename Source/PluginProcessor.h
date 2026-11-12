@@ -58,19 +58,6 @@ public:
     PatchManager patches { apvts };
 
     //==============================================================================
-    // TEMP DIAGNOSTIC for the "patch resets to INIT on stop / loop" bug - remove once found.
-    // Records what the host did; the editor flashes it on the LCD.
-    enum DiagKind { diagProgramLoaded = 1, diagProgramIgnored, diagStateRestored, diagMidiProgramChange, diagMidiReset };
-    void diag (int kind, int value)  { diagEvents[static_cast<size_t> (diagCount.load() & 7)].store (kind * 1000 + value); diagCount.fetch_add (1); }
-    int  getDiagCount() const        { return diagCount.load(); }
-    int  getDiagEvent (int n) const  { return diagEvents[static_cast<size_t> (n & 7)].load(); }
-    std::array<std::atomic<int>, 8> diagEvents {};
-    std::atomic<int> diagCount { 0 };
-    juce::String getDiagStateName() const { const juce::SpinLock::ScopedLockType sl (diagLock); return diagStateName; }
-    juce::String diagStateName;
-    mutable juce::SpinLock diagLock;
-
-    //==============================================================================
     // Pad (note) MIDI learn - used by the editor on the message thread. Lock-free.
     NoteMap noteMap;
 

@@ -265,29 +265,6 @@ void Decu6000AudioProcessorEditor::timerCallback()
 {
     auto* view = currentView();
     updatePatchText();
-
-    // TEMP DIAGNOSTIC - show what the host just did (remove once the INIT bug is found)
-    if (const int dc = decu.getDiagCount(); dc != seenDiag)
-    {
-        juce::StringArray parts;
-        for (int n = juce::jmax (0, dc - 3); n < dc; ++n)   // last 3 events, even ones already shown
-        {
-            const int e = decu.getDiagEvent (n), kind = e / 1000, v = e % 1000;
-            switch (kind)
-            {
-                case Decu6000AudioProcessor::diagProgramLoaded:     parts.add ("HOST PROG " + juce::String (v) + " LOADED"); break;
-                case Decu6000AudioProcessor::diagProgramIgnored:    parts.add ("HOST PROG " + juce::String (v) + " IGNORED"); break;
-                case Decu6000AudioProcessor::diagStateRestored:     parts.add ("HOST STATE RESTORE (" + decu.getDiagStateName() + ")"); break;
-                case Decu6000AudioProcessor::diagMidiProgramChange: parts.add ("MIDI PC " + juce::String (v)); break;
-                case Decu6000AudioProcessor::diagMidiReset:         parts.add ("MIDI RESET CC" + juce::String (v)); break;
-                default: break;
-            }
-        }
-        seenDiag = dc;
-        if (! parts.isEmpty())
-            lcd.showMessage (juce::String (dc) + ": " + parts.joinIntoString (" / "), Theme::learn, -1);   // stays until the next event
-    }
-
     lcd.tick();
 
     for (int i = 0; i < PadMap::numPads; ++i)

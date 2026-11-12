@@ -444,7 +444,8 @@ story += bullets([
     "<b>Browse:</b> click the arrows beside the LCD, or click the LCD for the full list.",
     "<b>Save:</b> click the LCD and choose <b>Save As...</b> to name a new patch, or <b>Save</b> to update the "
     "user patch you're on. <b>Delete</b> removes a user patch (the sound stays loaded).",
-    "<b>Your DAW's preset menu</b> lists the same patches.",
+    "Choose patches here, not from your DAW's preset menu. DAW presets (e.g. Cubase .vstpreset) still work - "
+    "they save the plug-in's full state.",
     "Your project remembers which patch was loaded, including unsaved changes.",
     "Pad layouts and MIDI CC assignments are <i>not</i> part of a patch.",
 ])

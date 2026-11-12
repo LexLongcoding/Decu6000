@@ -296,12 +296,6 @@ void Decu6000AudioProcessor::resetAllVoices()
 // trigger events (possibly dropped or delayed by the Bio-Neural Engine).
 void Decu6000AudioProcessor::handleMidi (const juce::MidiMessage& m, int pos, int numSamples)
 {
-    if (m.isProgramChange())
-        diag (diagMidiProgramChange, m.getProgramChangeNumber());
-
-    if (m.isAllNotesOff() || m.isAllSoundOff() || m.isResetAllControllers())
-        diag (diagMidiReset, m.getControllerNumber());
-
     if (m.isAllNotesOff() || m.isAllSoundOff())
     {
         resetAllVoices();
@@ -525,10 +519,9 @@ int Decu6000AudioProcessor::getNumPrograms()                        { return 1; 
 int Decu6000AudioProcessor::getCurrentProgram()                     { return 0; }
 const juce::String Decu6000AudioProcessor::getProgramName (int)     { return "Decu6000"; }
 
-void Decu6000AudioProcessor::setCurrentProgram (int index)
+void Decu6000AudioProcessor::setCurrentProgram (int)
 {
     // Ignore host program changes (some hosts still call this with 0, e.g. on load).
-    diag (diagProgramIgnored, index);   // TEMP DIAGNOSTIC
 }
 
 juce::AudioProcessorEditor* Decu6000AudioProcessor::createEditor()
@@ -589,11 +582,6 @@ void Decu6000AudioProcessor::setStateInformation (const void* data, int sizeInBy
             uiScale = juce::jlimit (0.5f, 1.25f, static_cast<float> (state.getProperty (uiScaleProperty, 0.8f)));
 
             const auto patchName = state.getProperty (patchNameProperty).toString();
-            {   // TEMP DIAGNOSTIC: remember which patch the host's snapshot contained
-                const juce::SpinLock::ScopedLockType sl (diagLock);
-                diagStateName = patchName.isEmpty() ? juce::String ("(NONE)") : patchName;
-            }
-            diag (diagStateRestored, 0);
             const bool patchModified = state.getProperty (patchModifiedProperty, patchName.isEmpty());
 
             for (auto* p : { noteMapProperty, ccMapProperty, uiViewProperty, uiScaleProperty,

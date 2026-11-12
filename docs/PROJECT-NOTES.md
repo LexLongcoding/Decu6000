@@ -1,6 +1,6 @@
 # Decu6000 - project notes (for contributors and for resuming work)
 
-Last updated: 2026-11-11, version 0.9.0. Repo: https://github.com/LexLongcoding/Decu6000
+Last updated: 2026-11-11, version 0.9.1. Repo: https://github.com/LexLongcoding/Decu6000
 License: AGPL-3.0-or-later, copyright LexLongcoding (JUCE is used under its AGPLv3 option).
 
 ## What it is
@@ -22,7 +22,8 @@ Designed around a 4x4 pad controller (Akai MPD18) but works with keyboards and D
 - **MIDI learn** for pads (notes) and knobs (CC 0-119). Mappings are saved with the DAW project,
   **not** in patches (they describe the controller).
 - **Patches**: factory (code) + user `.decupatch` XML in the user app-data folder; values stored by
-  parameter ID in real units, so old patches load in new versions. DAW program list = patch list.
+  parameter ID in real units, so old patches load in new versions. Patches are NOT exposed as DAW programs (getNumPrograms() = 1):
+  Cubase re-sent program 0 on stop / loop restart and reloaded INIT (fixed in 0.9.1).
 - **Bio-Neural Engine**: LUCID / UNSTABLE = how unstable ("drive"); BLEND = how much you hear
   ("mix"; 0 = off). Either at 0 = exact bypass (tested bit-identical). Owner explicitly wanted an
   amount knob where full left = off. Awakening rises with playing. SEED makes glitches repeatable;
@@ -37,7 +38,7 @@ Designed around a 4x4 pad controller (Akai MPD18) but works with keyboards and D
 | File | Role |
 |---|---|
 | `Source/Parameters.h` | Single table of all 112 parameters (id, name, knob label, range, skew, default, unit) + group titles |
-| `Source/PluginProcessor.*` | Voices, MIDI/event queue, CC & note learn, reverb, engine, state, DAW programs |
+| `Source/PluginProcessor.*` | Voices, MIDI/event queue, CC & note learn, reverb, engine, state |
 | `Source/*Voice.h` | DSP voices (JUCE-free, unit-testable): Kick, Snare, Hat, Tom, Cymbal (crash/ride), Perc (FM), Crystal (modal), Liquid (FM drip), Breath (formant), Digital (fold/chaos), Burst (granular) |
 | `Source/BioEngine.h` | Global instability layer (stutter, wow, crush/bits, micro-timing, prob, seed, history curve) |
 | `Source/GatedReverb.h` | Send-bus predelay -> juce::Reverb -> gate |

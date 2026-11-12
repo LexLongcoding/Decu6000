@@ -1,6 +1,12 @@
 **Decu6000** - an anime-inspired, mid-90s cyber-industrial / glitch / trip-hop drum synthesizer.
 16 fully synthesized voices, a gated reverb, and the Bio-Neural Engine. Free and open source (AGPL-3.0-or-later).
 
+## New in 0.9.1
+- **Fixed:** the patch jumped back to INIT when playback stopped or a loop restarted (seen in Cubase).
+  Patches are now chosen only in Decu6000's own patch browser; they no longer appear in the DAW's
+  preset/program menu. DAW presets still work. If Decu6000 is already in a project, you may need to
+  remove it from the track and insert it again so the DAW notices the change.
+
 ## Downloads
 | File | What |
 |---|---|
