@@ -44,13 +44,12 @@ public:
     bool isMidiEffect() const override { return false; }
     double getTailLengthSeconds() const override { return 8.0; }
 
-    // The DAW's preset list = factory + user patches (as found when the plugin loaded).
+    // Not exposed to the host - see PluginProcessor.cpp.
     int getNumPrograms() override;
     int getCurrentProgram() override;
     void setCurrentProgram (int) override;
     const juce::String getProgramName (int) override;
     void changeProgramName (int, const juce::String&) override {}
-    void currentPatchChanged();                       // PatchManager -> host program sync
 
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
@@ -67,6 +66,9 @@ public:
     int  getDiagEvent (int n) const  { return diagEvents[static_cast<size_t> (n & 7)].load(); }
     std::array<std::atomic<int>, 8> diagEvents {};
     std::atomic<int> diagCount { 0 };
+    juce::String getDiagStateName() const { const juce::SpinLock::ScopedLockType sl (diagLock); return diagStateName; }
+    juce::String diagStateName;
+    mutable juce::SpinLock diagLock;
 
     //==============================================================================
     // Pad (note) MIDI learn - used by the editor on the message thread. Lock-free.
@@ -103,7 +105,6 @@ public:
     float uiScale = 0.8f;
 
 private:
-    bool hostIsSettingProgram = false;   // true while the host is driving setCurrentProgram()
     static juce::AudioProcessorValueTreeState::ParameterLayout createLayout();
     void updateVoiceParams();
     void handleMidi (const juce::MidiMessage& m, int pos, int numSamples);

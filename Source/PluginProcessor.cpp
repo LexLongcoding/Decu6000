@@ -99,8 +99,6 @@ Decu6000AudioProcessor::Decu6000AudioProcessor()
     buildIndexTable();
     for (auto& c : ccToParam)
         c.store (-1);
-
-    patches.onCurrentPatchChanged = [this] { currentPatchChanged(); };
 }
 
 void Decu6000AudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
@@ -518,44 +516,19 @@ void Decu6000AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
     meters[1].store (buffer.getMagnitude (buffer.getNumChannels() > 1 ? 1 : 0, 0, numSamples), std::memory_order_relaxed);
 }
 
-int Decu6000AudioProcessor::getNumPrograms()
-{
-    return juce::jmax (1, static_cast<int> (patches.getEntries().size()));
-}
-
-int Decu6000AudioProcessor::getCurrentProgram()
-{
-    return juce::jmax (0, patches.getCurrentIndex());
-}
+// Patches are NOT exposed to the host as programs. Cubase re-sends program 0 on
+// transport stop and loop restart, which reloaded INIT over whatever patch was
+// picked in Decu6000's own browser. With a single program JUCE creates no VST3
+// program-change parameter, so the host has nothing to send. Patches are chosen
+// in the plugin's browser; DAW presets still work because they save the full state.
+int Decu6000AudioProcessor::getNumPrograms()                        { return 1; }
+int Decu6000AudioProcessor::getCurrentProgram()                     { return 0; }
+const juce::String Decu6000AudioProcessor::getProgramName (int)     { return "Decu6000"; }
 
 void Decu6000AudioProcessor::setCurrentProgram (int index)
 {
-    // Hosts re-send the program they last knew about - Cubase does it on stop and on
-    // loop/cycle restart. Re-loading the patch we already report would throw away the
-    // current sound (and any unsaved tweaks), so only act on a genuine change.
-    if (index == getCurrentProgram())
-    {
-        diag (diagProgramIgnored, index);
-        return;
-    }
-
-    diag (diagProgramLoaded, index);
-    const juce::ScopedValueSetter<bool> fromHost (hostIsSettingProgram, true);
-    patches.load (index);
-}
-
-void Decu6000AudioProcessor::currentPatchChanged()
-{
-    // Keep the host's idea of the current program in step with the patch browser.
-    // Without this the host's program stays at 0 (INIT) and it sends that back on stop.
-    if (! hostIsSettingProgram)
-        updateHostDisplay (ChangeDetails().withProgramChanged (true));
-}
-
-const juce::String Decu6000AudioProcessor::getProgramName (int index)
-{
-    const auto& e = patches.getEntries();
-    return index >= 0 && index < static_cast<int> (e.size()) ? e[static_cast<size_t> (index)].name : juce::String();
+    // Ignore host program changes (some hosts still call this with 0, e.g. on load).
+    diag (diagProgramIgnored, index);   // TEMP DIAGNOSTIC
 }
 
 juce::AudioProcessorEditor* Decu6000AudioProcessor::createEditor()
@@ -606,7 +579,6 @@ void Decu6000AudioProcessor::setStateInformation (const void* data, int sizeInBy
     if (auto xml = getXmlFromBinary (data, sizeInBytes))
         if (xml->hasTagName (apvts.state.getType()))
         {
-            diag (diagStateRestored, 0);
             auto state = juce::ValueTree::fromXml (*xml);
 
             const auto mapText = state.getProperty (noteMapProperty).toString();
@@ -617,6 +589,11 @@ void Decu6000AudioProcessor::setStateInformation (const void* data, int sizeInBy
             uiScale = juce::jlimit (0.5f, 1.25f, static_cast<float> (state.getProperty (uiScaleProperty, 0.8f)));
 
             const auto patchName = state.getProperty (patchNameProperty).toString();
+            {   // TEMP DIAGNOSTIC: remember which patch the host's snapshot contained
+                const juce::SpinLock::ScopedLockType sl (diagLock);
+                diagStateName = patchName.isEmpty() ? juce::String ("(NONE)") : patchName;
+            }
+            diag (diagStateRestored, 0);
             const bool patchModified = state.getProperty (patchModifiedProperty, patchName.isEmpty());
 
             for (auto* p : { noteMapProperty, ccMapProperty, uiViewProperty, uiScaleProperty,
